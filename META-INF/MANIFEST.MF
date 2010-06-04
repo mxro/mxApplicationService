@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: mxApplicationService
+Bundle-SymbolicName: de.mxro.applicationservice
+Bundle-Version: 0.0.1.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: de.mxro.applicationservice
