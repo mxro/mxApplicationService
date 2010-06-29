@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?><project>
+  
+  <properties>
+		<module.group>de.mxro.applicationservice</module.group>    <!--  Maven groupId -->
+		<module.name>mxApplicationService</module.name>             <!--  Maven artifactId -->
+		<module.version>0.0.3</module.version> <!--  Maven artifact version -->
+		<module.importedPackages>*
+		</module.importedPackages>
+		<module.exportedPackages>de.mxro.applicationservice
+		</module.exportedPackages>
+		<module.serviceDefinitions>
+		</module.serviceDefinitions>
+	</properties>
+
+	<!--  Dependent Modules -->
+  
   <modelVersion>4.0.0</modelVersion>
-  <groupId>de.mxro.applicationservice</groupId>
-  <artifactId>mxApplicationService</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+   
+  <groupId>${module.group}</groupId>
+	<artifactId>${module.name}</artifactId>
+	<version>${module.version}</version>
+	<name>${module.name}</name>
+	<packaging>bundle</packaging>
+  
   <build>
   	<!-- Resources -->
     <resources>
@@ -46,22 +65,94 @@
 
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-      
-      <plugin>
-      	<groupId>org.apache.maven.plugins</groupId>
-      	<artifactId>maven-jar-plugin</artifactId>
-      	<configuration>
-      		<archive>
-      			<manifestFile>META-INF/MANIFEST.MF</manifestFile>
-      		</archive>
-        </configuration>
-      </plugin> 
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<!--  The Maven bundle plugin generates Meta-data required for OSGi  -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+						<Bundle-Version>${pom.version}</Bundle-Version>
+						<Import-Package>${module.importedPackages}</Import-Package>
+						<Export-Package>${module.exportedPackages}</Export-Package>
+						<Service-Component>${module.serviceDefinitions}
+						</Service-Component>
+					</instructions>
+				</configuration>
+			</plugin>
+
+			<!--
+				Dependency Plugin used to copy the dependency JARs into the root
+				project folder. There the Maven eclipse plugin will add them to the
+				classpath of PDE projects.
+			-->
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!--
+				Cleanup necessary because of PDE tweaks, clear the project directory
+			-->
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}</directory>
+							<includes>
+								<include>*.jar</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+
+			<!--
+				Keep the MANIFEST.MF used by eclipse in sync with the MANIFEST.MF
+				created by the maven bundle plugin
+			-->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<delete file="${basedir}/META-INF/MANIFEST.MF" />
+								<copy file="target/classes/META-INF/MANIFEST.MF" tofile="${basedir}/META-INF/MANIFEST.MF" />
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
       
     </plugins>
   </build>
