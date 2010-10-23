@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Export-Package: de.mxro.applicationservice
-Built-By: mx
-Build-Jdk: 1.6.0_20
+Built-By: Max
+Build-Jdk: 1.6.0_22
 Bundle-Version: 0.0.3
 Tool: Bnd-0.0.357
 Bundle-Name: mxApplicationService
-Bnd-LastModified: 1277787769844
+Bnd-LastModified: 1287778481086
 Created-By: Apache Maven Bundle Plugin
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: mxApplicationService
